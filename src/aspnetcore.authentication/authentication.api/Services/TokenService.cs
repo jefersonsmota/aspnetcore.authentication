@@ -15,7 +15,7 @@ namespace authentication.api.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var hashKey = Encoding.ASCII.GetBytes(appSettings.Secret);
-            var expires = DateTime.UtcNow.AddHours(appSettings.Expiration);
+            var expires = DateTime.UtcNow.AddMinutes(5);// DateTime.UtcNow.AddHours(appSettings.Expiration);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

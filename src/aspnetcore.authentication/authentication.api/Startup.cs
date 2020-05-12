@@ -12,8 +12,9 @@ using Microsoft.IdentityModel.Logging;
 using System.Linq;
 using System.Text;
 using authentication.api.Services;
-using Microsoft.AspNetCore.Authorization;
 using authentication.api.Configurations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using authentication.api.Events;
 
 namespace authentication.api
 {
@@ -38,7 +39,6 @@ namespace authentication.api
             services.AddMvc(options =>
             {
                 options.Filters.Add(new ApiExceptionFilterAttribute());
-                options.Filters.Add(new JwtAuthorizationFilter(new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()));
             });
 
             services.AddControllers()
@@ -64,10 +64,9 @@ namespace authentication.api
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = "MyBearer";
-                options.DefaultChallengeScheme = "MyBearer";
-
-                options.AddScheme<CustomAuthenticationHandler>("MyBearer", "MyBearer");
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -83,6 +82,8 @@ namespace authentication.api
                     ValidateLifetime = true,
                     LifetimeValidator = TokenLifetimeValidator.Validate
                 };
+
+                options.Events = new JwtBearerCustomEvents();
             });
         }
 
