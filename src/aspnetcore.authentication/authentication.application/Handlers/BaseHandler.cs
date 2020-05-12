@@ -1,5 +1,4 @@
-﻿using authentication.domain.Notifications;
-using AutoMapper;
+﻿using AutoMapper;
 
 namespace authentication.application.Handlers
 {

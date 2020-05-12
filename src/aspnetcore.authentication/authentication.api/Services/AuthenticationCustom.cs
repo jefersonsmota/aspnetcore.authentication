@@ -1,12 +1,9 @@
-﻿using authentication.api.ViewModels;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -28,41 +25,6 @@ namespace authentication.api.Services
             : base(options, logger, encoder, clock)
         {
             _configuration = configuration;
-        }
-
-        protected override Task HandleChallengeAsync(AuthenticationProperties properties)
-        {
-            return Task.Run(async () =>
-            {
-                byte[] bytes;
-
-                if (_securityToken?.ValidTo < DateTime.UtcNow)
-                {
-                    Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new DataResponse("Unauthorized - invalid session", StatusCodes.Status403Forbidden)));
-                }
-                else
-                {
-                    Response.StatusCode = StatusCodes.Status403Forbidden;
-                    bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new DataResponse("Unauthorized", StatusCodes.Status403Forbidden)));
-                }
-
-                bytes.CopyTo(Response.BodyWriter.GetMemory().Span);
-                Response.BodyWriter.Advance(bytes.Length);
-                await Response.BodyWriter.FlushAsync();
-            });
-        }
-
-        protected override Task HandleForbiddenAsync(AuthenticationProperties properties)
-        {
-            return Task.Run(async () =>
-            {
-                Response.StatusCode = StatusCodes.Status403Forbidden;
-                var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new DataResponse("Unauthorized - invalid session", StatusCodes.Status403Forbidden)));
-                bytes.CopyTo(Response.BodyWriter.GetMemory().Span);
-                Response.BodyWriter.Advance(bytes.Length);
-                await Response.BodyWriter.FlushAsync();
-            });
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
