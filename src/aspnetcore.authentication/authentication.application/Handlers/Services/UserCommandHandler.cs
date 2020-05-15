@@ -1,12 +1,10 @@
 ﻿using authentication.application.Commands.User;
-using authentication.application.Common.Services;
 using authentication.application.Handlers.Interfaces;
 using authentication.domain.Constants;
 using authentication.domain.Entities;
 using authentication.domain.Exceptions;
 using authentication.infrastructure.Interfaces;
 using AutoMapper;
-using System;
 using System.Threading.Tasks;
 
 namespace authentication.application.Handlers.Services
@@ -33,15 +31,12 @@ namespace authentication.application.Handlers.Services
             if (await _userRepository.CheckAlreadyExist(command.Email))
                 throw new ValidationException(Messages.EMAIL_ALREADY_EXISTS);
 
-            var user = _mapper.Map<User>(command);
+            var user = _mapper.Map<CreateUserRequest, User>(command);
 
-            user.CreatedAt = DateTime.Now;
+            if(!user.IsValid())
+                throw new ValidationException(Messages.EMAIL_ALREADY_EXISTS);
 
-            user.Salt = Guid.NewGuid().ToString();
-
-            user.Password = HashPassService.GenerateSaltedHash(user.Password, user.Salt);
-
-            return await _userRepository.Add(_mapper.Map<User>(user));
+            return await _userRepository.Add(user);
         }
 
         public async Task<UserResponse> Handler(SingInUserRequest singIn)
@@ -54,12 +49,12 @@ namespace authentication.application.Handlers.Services
             if (user == null)
                 throw new NotFoundException(Messages.INVALID_EMAIL_OR_PASSWORD);
 
-            var testPass = HashPassService.GenerateSaltedHash(singIn.Password, user.Salt);
-
-            if (!HashPassService.CompareByteArrays(user.Password, testPass))
+            if (!user.isValidPass(singIn.Password))
                 throw new ValidationException(Messages.INVALID_EMAIL_OR_PASSWORD);
 
-            _ = _userRepository.RegisterAccess(user.Id, DateTime.Now);
+            user.UpdateLastLogin();
+
+            _ = _userRepository.RegisterAccess(user);
 
             return _mapper.Map<UserResponse>(user);
         }

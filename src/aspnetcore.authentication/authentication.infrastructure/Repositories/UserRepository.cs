@@ -29,10 +29,8 @@ namespace authentication.infrastructure.Repositories
         {
             return await _context.Users.AnyAsync(x => x.Email.ToLowerInvariant() == email.ToLowerInvariant());
         }
-        public async Task<User> RegisterAccess(Guid userId, DateTime lastLogin)
+        public async Task<User> RegisterAccess(User user)
         {
-            var user = new User() { Id = userId, LastLogin = lastLogin };
-
             _context.Users.Attach(user);
             _context.Entry(user).Property(x => x.LastLogin).IsModified = true;
             

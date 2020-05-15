@@ -22,10 +22,10 @@ namespace authentication.api.Filters
             }
             else
             {
-                var details = new ProblemDetails
+                var details = new DataResponse
                 {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Title = "An error occurred while processing your request."
+                    ErrorCode = StatusCodes.Status500InternalServerError,
+                    Message = "An error occurred while processing your request."
                 };
 
                 context.Result = new ObjectResult(details)
@@ -51,10 +51,10 @@ namespace authentication.api.Filters
             }
             else
             {
-                var details = new ProblemDetails
+                var details = new DataResponse
                 {
-                    Status = StatusCodes.Status500InternalServerError,
-                    Title = "An error occurred while processing your request."
+                    ErrorCode = StatusCodes.Status500InternalServerError,
+                    Message = "An error occurred while processing your request."
                 };
 
                 context.Result = new ObjectResult(details)

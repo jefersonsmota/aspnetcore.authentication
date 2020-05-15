@@ -1,4 +1,4 @@
-using authentication.application.Common.Mapper;
+using authentication.application.Common.Mappers;
 using authentication.application.Handlers.Interfaces;
 using authentication.application.Handlers.Services;
 using authentication.infrastructure.Interfaces;

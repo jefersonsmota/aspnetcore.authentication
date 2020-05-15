@@ -9,6 +9,6 @@ namespace authentication.infrastructure.Interfaces
         Task<int> Add(User user);
         Task<User> GetByEmail(string email);
         Task<bool> CheckAlreadyExist(string email);
-        Task<User> RegisterAccess(Guid userId, DateTime lastLogin);
+        Task<User> RegisterAccess(User user);
     }
 }

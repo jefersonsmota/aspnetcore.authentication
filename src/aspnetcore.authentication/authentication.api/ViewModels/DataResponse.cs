@@ -10,11 +10,14 @@ namespace authentication.api.ViewModels
         [JsonPropertyName("errorCode")]
         public int ErrorCode { get; set; }
 
-
-        public DataResponse(string message, int errorCode)
+        [JsonPropertyName("data")]
+        public dynamic Data { get; set; }
+        
+        public DataResponse(string message = "", int errorCode = 0, dynamic data = null)
         {
             Message = message;
             ErrorCode = errorCode;
+            Data = data;
         }
     }
 }

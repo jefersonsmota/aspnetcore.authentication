@@ -14,7 +14,7 @@ namespace application.integration.test.Commands
         [Test]
         public void ShouldRequireFieldsTest()
         {
-            _mockRepository.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult(new User()));
+            _mockRepository.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
             var singInUserRequest = new SingInUserRequest()
             {
@@ -32,7 +32,7 @@ namespace application.integration.test.Commands
         [Test]
         public void ShouldInvalidFieldsTest()
         {
-            _mockRepository.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult(new User()));
+            _mockRepository.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
             var singInUserRequest = new SingInUserRequest()
             {

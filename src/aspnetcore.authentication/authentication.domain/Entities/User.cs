@@ -1,21 +1,101 @@
-﻿using System;
+﻿using authentication.domain.Services;
+using authentication.domain.Validations;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace authentication.domain.Entities
 {
     /// <summary>
     /// Usuário domínio. 
     /// </summary>
-    public class User
+    public class User : Entity
     {
-        public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string Salt { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime LastLogin { get; set; }
-        public IEnumerable<Phone> Phones { get; set; }
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
+        public string Email { get; private set; }
+        public string Password { get; private set; }
+        public string Salt { get; private set; }
+        public DateTime CreatedAt { get; private set; }
+        public DateTime? LastLogin { get; private set; }
+        public IEnumerable<Phone> Phones { get; private set; }
+
+        public User(string firstName, string lastName, string email, string password, IEnumerable<Phone> phones = null, DateTime? createdAt = null, DateTime? lastLogin = null)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            CreatedAt = createdAt.HasValue ? createdAt.Value : DateTime.UtcNow;
+            LastLogin = lastLogin;
+
+            Salt = Guid.NewGuid().ToString(); 
+            Password = HashPassService.GenerateSaltedHash(password, Salt);
+
+            Phones = phones;
+        }
+
+        public User(Guid id, string firstName, string lastName, string email, string password, string salt, IEnumerable<Phone> phones = null, DateTime? createdAt = null, DateTime? lastLogin = null)
+        {
+            Id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            CreatedAt = createdAt.HasValue ? createdAt.Value : DateTime.UtcNow;
+            LastLogin = lastLogin;
+
+            Salt = salt;
+            Password = password;
+
+            Phones = phones;
+        }
+
+        protected User() { }
+
+        public void AddPhone(int number, int areaCode, string countryCode)
+        {
+            var phone = new Phone(number, areaCode, countryCode);
+
+            AddPhone(phone);
+        }
+        public void AddPhone(Phone phone)
+        {
+            var phones = new List<Phone>();
+
+            if(Phones.Any())
+                phones.AddRange(Phones);
+            
+            phones.Add(phone);
+
+            Phones = phones;
+        }
+
+        public void AddPhone(IEnumerable<Phone> phones)
+        {
+            var newPhones = new List<Phone>();
+
+            if (Phones.Any())
+                newPhones.AddRange(Phones);
+
+            newPhones.AddRange(phones);
+
+            Phones = newPhones;
+        }
+
+        public void UpdateLastLogin()
+        {
+            this.LastLogin = DateTime.UtcNow;
+        }
+
+        public bool isValidPass(string checkPass)
+        {
+            var testPass = HashPassService.GenerateSaltedHash(checkPass, this.Salt);
+            return HashPassService.CompareByteArrays(this.Password, testPass);
+        }
+
+        public override bool IsValid()
+        {
+            var validate = new UserValidation().Validate(this);
+            return validate.IsValid;
+        }
     }
 }

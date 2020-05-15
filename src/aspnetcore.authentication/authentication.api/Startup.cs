@@ -47,11 +47,13 @@ namespace authentication.api
                 {
                     options.InvalidModelStateResponseFactory = context =>
                     {
-                        var errors = context.ModelState.Values.SelectMany(x => x.Errors);
+                        if (!context.ModelState.Any())
+                            return new BadRequestObjectResult(new DataResponse(message: "Inválid field", errorCode: 400));
 
-                        var errorMessage = errors.FirstOrDefault()?.ErrorMessage;
 
-                        return new BadRequestObjectResult(new DataResponse(errorMessage, 400));
+                        var errors = context.ModelState.Select(x => new { field = x.Key, errors = x.Value.Errors });
+
+                        return new BadRequestObjectResult(new DataResponse("InvalidFields", 400, errors));
                     };
                 });
 

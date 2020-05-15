@@ -13,7 +13,7 @@ namespace authentication.api.Events
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 context.Response.ContentType = "application/json";
-                context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(new ViewModels.DataResponse("Unauthorized - invalid session", StatusCodes.Status403Forbidden)));
+                context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(new { message = "Unauthorized - invalid session", errorCode = StatusCodes.Status403Forbidden }));
             }
 
             return base.AuthenticationFailed(context);
@@ -25,7 +25,7 @@ namespace authentication.api.Events
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 context.Response.ContentType = "application/json";
-                context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(new ViewModels.DataResponse("Unauthorized", StatusCodes.Status401Unauthorized)));
+                context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(new { message = "Unauthorized", errorCode = StatusCodes.Status401Unauthorized }));
             }
 
             return base.Challenge(context);

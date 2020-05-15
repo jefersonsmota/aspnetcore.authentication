@@ -3,7 +3,7 @@ using authentication.application.Handlers.Services;
 using authentication.infrastructure;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using authentication.application.Common.Mapper;
+using authentication.application.Common.Mappers;
 
 namespace authentication.application
 {
@@ -44,7 +44,7 @@ namespace authentication.application
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new AutoMapperProfile());
+                cfg.AddProfile<AutoMapperProfile>();
             });
 
             IMapper mapper = config.CreateMapper();

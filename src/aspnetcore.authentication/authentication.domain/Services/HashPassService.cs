@@ -1,18 +1,17 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace authentication.application.Common.Services
+namespace authentication.domain.Services
 {
     public static class HashPassService
     {
         public static string GenerateSaltedHash(string pass, string saltpass)
         {
-            HashAlgorithm algorithm = new SHA256Managed();
+            var algorithm = new SHA256Managed();
             var plainText = Encoding.ASCII.GetBytes(pass);
             var salt = Encoding.ASCII.GetBytes(saltpass);
 
-            byte[] plainTextWithSaltBytes =
-              new byte[plainText.Length + salt.Length];
+            var plainTextWithSaltBytes = new byte[plainText.Length + salt.Length];
 
             for (int i = 0; i < plainText.Length; i++)
             {
@@ -25,7 +24,7 @@ namespace authentication.application.Common.Services
 
             var data = algorithm.ComputeHash(plainTextWithSaltBytes);
 
-            StringBuilder sBuilder = new StringBuilder();
+            var sBuilder = new StringBuilder();
 
             for (int i = 0; i < data.Length; i++)
             {
@@ -37,8 +36,8 @@ namespace authentication.application.Common.Services
 
         public static bool CompareByteArrays(string pass1, string pass2)
         {
-            byte[] array1 = Encoding.UTF8.GetBytes(pass1);
-            byte[] array2 = Encoding.UTF8.GetBytes(pass2);
+            var array1 = Encoding.UTF8.GetBytes(pass1);
+            var array2 = Encoding.UTF8.GetBytes(pass2);
 
             if (array1.Length != array2.Length)
             {
