@@ -32,21 +32,8 @@ namespace authentication.domain.Entities
             Password = HashPassService.GenerateSaltedHash(password, Salt);
 
             Phones = phones;
-        }
 
-        public User(Guid id, string firstName, string lastName, string email, string password, string salt, IEnumerable<Phone> phones = null, DateTime? createdAt = null, DateTime? lastLogin = null)
-        {
-            Id = id;
-            FirstName = firstName;
-            LastName = lastName;
-            Email = email;
-            CreatedAt = createdAt.HasValue ? createdAt.Value : DateTime.UtcNow;
-            LastLogin = lastLogin;
-
-            Salt = salt;
-            Password = password;
-
-            Phones = phones;
+            Validation = new UserValidation().Validate(this);
         }
 
         protected User() { }
@@ -94,8 +81,7 @@ namespace authentication.domain.Entities
 
         public override bool IsValid()
         {
-            var validate = new UserValidation().Validate(this);
-            return validate.IsValid;
+            return Validation.IsValid;
         }
     }
 }

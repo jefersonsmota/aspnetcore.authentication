@@ -14,7 +14,7 @@ namespace application.integration.test.Commands
     public class CreateUserCommandTest : TestBase
     {
         [Test]
-        public void ShouldRequireFieldsTest()
+        public async Task ShouldRequireFieldsTest()
         {
             _mockRepository.Setup(x => x.Add(It.IsAny<User>())).Returns(Task.FromResult(0));
 
@@ -30,11 +30,11 @@ namespace application.integration.test.Commands
                 }
             };
 
-            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockValidation);
+            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
-            ValidationException ex = Assert.ThrowsAsync<ValidationException>(async () => await command.Handler(createUserRequest));
+            var result = await command.Handler(createUserRequest);
 
-            Assert.That(ex.Message, Is.EqualTo(Messages.MISSING_FIELDS));
+            Assert.AreEqual(0, result);
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace application.integration.test.Commands
                 }
             };
 
-            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockValidation);
+            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
             var ex = Assert.ThrowsAsync<ValidationException>(async () => await command.Handler(createUserRequest), Messages.INVALID_FIELDS);
 
@@ -78,7 +78,7 @@ namespace application.integration.test.Commands
                 }
             };
 
-            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockValidation);
+            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
             var ex = Assert.ThrowsAsync<ValidationException>(async () => await command.Handler(createUserRequest));
 

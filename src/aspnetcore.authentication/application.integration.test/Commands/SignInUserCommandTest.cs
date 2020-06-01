@@ -22,7 +22,7 @@ namespace application.integration.test.Commands
                 Password = "12345678"
             };
 
-            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockValidation);
+            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
             ValidationException ex = Assert.ThrowsAsync<ValidationException>(async () => await command.Handler(singInUserRequest));
 
@@ -40,7 +40,7 @@ namespace application.integration.test.Commands
                 Password = "12345678"
             };
 
-            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockValidation);
+            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
             ValidationException ex = Assert.ThrowsAsync<ValidationException>(async () => await command.Handler(singInUserRequest));
 
@@ -58,7 +58,7 @@ namespace application.integration.test.Commands
                 Password = "12345678"
             };
 
-            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockValidation);
+            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
             NotFoundException ex = Assert.ThrowsAsync<NotFoundException>(async () => await command.Handler(singInUserRequest));
 

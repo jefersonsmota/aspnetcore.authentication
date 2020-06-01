@@ -15,6 +15,9 @@ using authentication.api.Services;
 using authentication.api.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using authentication.api.Events;
+using authentication.domain.Notifications;
+using authentication.application.Common;
+using authentication.domain.Constants;
 
 namespace authentication.api
 {
@@ -50,10 +53,9 @@ namespace authentication.api
                         if (!context.ModelState.Any())
                             return new BadRequestObjectResult(new DataResponse(message: "Inválid field", errorCode: 400));
 
+                        var errors = context.ModelState.Select(x => new Notification(x.Key, x.Value.Errors.First().ErrorMessage));
 
-                        var errors = context.ModelState.Select(x => new { field = x.Key, errors = x.Value.Errors });
-
-                        return new BadRequestObjectResult(new DataResponse("InvalidFields", 400, errors));
+                        return new BadRequestObjectResult(new CommandResponse(400, Messages.INVALID_FIELDS, null, false) { Notifications = errors });
                     };
                 });
 
@@ -121,6 +123,7 @@ namespace authentication.api
         /// <param name="services">Service Collection</param>
         private void ConfigureIoC(IServiceCollection services)
         {
+            services.AddScoped<NotificationContext>();
             services.AddSingleton(Configuration);
             services.AddApplication();
         }

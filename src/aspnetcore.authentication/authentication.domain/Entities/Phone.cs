@@ -21,14 +21,15 @@ namespace authentication.domain.Entities
             Number = number;
             AreaCode = areaCode;
             CountryCode = countryCode;
+
+            Validation = new PhoneValidation().Validate(this);
         }
 
         protected Phone() { }
 
         public override bool IsValid()
         {
-            var validate = new PhoneValidation().Validate(this);
-            return validate.IsValid;
+            return Validation.IsValid;
         }
     }
 }

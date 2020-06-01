@@ -2,6 +2,8 @@
 {
     public static class Messages
     {
+        public const string SING_IN = "Sing-in success";
+        public const string CREATED_SUCCESS = "Item created with success";
         public const string NOT_FOUND_USER = "User not found";
         public const string INVALID_FIELDS = "Invalid Fiels";
         public const string MISSING_FIELDS = "Missing fields";

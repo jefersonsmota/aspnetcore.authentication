@@ -11,7 +11,7 @@ namespace authentication.api.Controllers
     {
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<dynamic>> Index()
+        public ActionResult<dynamic> Index()
         {
             return Ok(new { 
                 Title = "Authentication Api",

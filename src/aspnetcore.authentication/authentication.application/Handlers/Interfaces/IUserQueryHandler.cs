@@ -1,10 +1,10 @@
-﻿using authentication.application.Commands.User;
+﻿using authentication.application.Common;
 using System.Threading.Tasks;
 
 namespace authentication.application.Handlers.Interfaces
 {
     public interface IUserQueryHandler
     {
-        Task<UserResponse> Handler(string login);
+        Task<CommandResponse> Handler(string login);
     }
 }

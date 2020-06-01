@@ -25,9 +25,6 @@ namespace authentication.application
             // Infra e Repositorios
             services.AddRepository();
 
-            // Handlers de validação da camada de aplicação
-            services.AddScoped<IUserValidationHandler, UserValidationHandler>();
-
             // Handlers de commands e querys da camada de aplicação
             services.AddScoped<IUserCommandHandler, UserCommandHandler>();
             services.AddScoped<IUserQueryHandler, UserQueryHandler>();

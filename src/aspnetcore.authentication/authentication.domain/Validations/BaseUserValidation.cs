@@ -1,9 +1,9 @@
-﻿using authentication.application.Commands.User;
+﻿using authentication.domain.Entities;
 using FluentValidation;
 
-namespace authentication.application.Validations
+namespace authentication.domain.Validations
 {
-    public abstract class UserCommandValidation : AbstractValidator<CreateUserRequest>
+    public class BaseUserValidation : AbstractValidator<User>
     {
         protected void ValidateFirstName()
         {
@@ -15,15 +15,15 @@ namespace authentication.application.Validations
         protected void ValidateLastName()
         {
             RuleFor(u => u.LastName)
-                            .NotEmpty().WithMessage("Last Name is requires")
-                            .Length(2, 150).WithMessage("The Last Name must have between 2 and 150 characters");
+                .NotEmpty().WithMessage("Last Name is requires")
+                .Length(2, 150).WithMessage("The Last Name must have between 2 and 150 characters");
         }
 
         protected void ValidateEmail()
         {
             RuleFor(u => u.Email)
                 .NotEmpty().WithMessage("Email is requires")
-                .EmailAddress();
+                .EmailAddress().WithMessage("Email is not valid");
         }
 
         protected void ValidatePassword()
