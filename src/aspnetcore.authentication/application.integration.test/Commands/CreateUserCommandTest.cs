@@ -34,11 +34,14 @@ namespace application.integration.test.Commands
 
             var result = await command.Handler(createUserRequest);
 
-            Assert.AreEqual(0, result);
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.Error);
+            Assert.AreEqual(400, result.StatusCode);
+            Assert.AreEqual(Messages.INVALID_FIELDS, result.Message);
         }
 
         [Test]
-        public void ShouldInvalidFieldsTest()
+        public async Task ShouldInvalidFieldsTest()
         {
             _mockRepository.Setup(x => x.Add(It.IsAny<User>())).Returns(Task.FromResult(0));
 
@@ -56,13 +59,16 @@ namespace application.integration.test.Commands
 
             var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
-            var ex = Assert.ThrowsAsync<ValidationException>(async () => await command.Handler(createUserRequest), Messages.INVALID_FIELDS);
+            var result = await command.Handler(createUserRequest);
 
-            Assert.That(ex.Message, Is.EqualTo(Messages.INVALID_FIELDS));
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.Error);
+            Assert.AreEqual(400, result.StatusCode);
+            Assert.AreEqual(Messages.INVALID_FIELDS, result.Message);
         }
     
         [Test]
-        public void ShouldEmailAlreadyExistTest()
+        public async Task ShouldEmailAlreadyExistTest()
         {
             _mockRepository.Setup(x => x.CheckAlreadyExist(It.IsAny<string>())).Returns(Task.FromResult(true));
 
@@ -80,9 +86,13 @@ namespace application.integration.test.Commands
 
             var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
-            var ex = Assert.ThrowsAsync<ValidationException>(async () => await command.Handler(createUserRequest));
+            var result = await command.Handler(createUserRequest);
 
-            Assert.That(ex.Message, Is.EqualTo(Messages.EMAIL_ALREADY_EXISTS));
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.Error);
+            Assert.AreEqual(400, result.StatusCode);
+            Assert.AreEqual(Messages.INVALID_FIELDS, result.Message);
+            Assert.IsTrue(_mockNotificationContext.HasNotifications);
         }
     }
 
