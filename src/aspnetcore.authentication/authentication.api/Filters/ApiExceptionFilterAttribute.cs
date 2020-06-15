@@ -1,4 +1,4 @@
-﻿using authentication.api.ViewModels;
+﻿using authentication.application.Common;
 using authentication.domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,18 +15,14 @@ namespace authentication.api.Filters
             {
                 var excep = context.Exception as HandlerException;
 
-                context.Result = new ObjectResult(new DataResponse(excep.Message, excep.HttpStatusCode))
+                context.Result = new ObjectResult(new CommandResponse(excep.HttpStatusCode, excep.Message, null, false))
                 {
                     StatusCode = excep.HttpStatusCode
                 };
             }
             else
             {
-                var details = new DataResponse
-                {
-                    ErrorCode = StatusCodes.Status500InternalServerError,
-                    Message = "An error occurred while processing your request."
-                };
+                var details = new CommandResponse(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.", null, false);
 
                 context.Result = new ObjectResult(details)
                 {
@@ -44,18 +40,14 @@ namespace authentication.api.Filters
             {
                 var excep = context.Exception as HandlerException;
 
-                context.Result = new ObjectResult(new DataResponse(excep.Message, excep.HttpStatusCode))
+                context.Result = new ObjectResult(new CommandResponse(excep.HttpStatusCode, excep.Message, null, false))
                 {
                     StatusCode = excep.HttpStatusCode
                 };
             }
             else
             {
-                var details = new DataResponse
-                {
-                    ErrorCode = StatusCodes.Status500InternalServerError,
-                    Message = "An error occurred while processing your request."
-                };
+                var details = new CommandResponse(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.", null, false);
 
                 context.Result = new ObjectResult(details)
                 {

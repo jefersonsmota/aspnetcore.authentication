@@ -2,7 +2,6 @@
 using authentication.infrastructure.Context;
 using authentication.infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading.Tasks;
 
 namespace authentication.infrastructure.Repositories
@@ -14,6 +13,7 @@ namespace authentication.infrastructure.Repositories
         {
             _context = context;
         }
+
         public async Task<int> Add(User user)
         {
             _context.Users.Add(user);
@@ -22,7 +22,7 @@ namespace authentication.infrastructure.Repositories
 
         public async Task<User> GetByEmail(string email)
         {
-            return await _context.Users.Include(x => x.Phones).AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
+            return await _context.Users.AsNoTracking().Include(x => x.Phones).FirstOrDefaultAsync(x => x.Email == email);
         }
 
         public async Task<bool> CheckAlreadyExist(string email)

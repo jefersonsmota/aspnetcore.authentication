@@ -1,5 +1,4 @@
 ﻿using authentication.domain.Entities;
-using System;
 using System.Threading.Tasks;
 
 namespace authentication.infrastructure.Interfaces

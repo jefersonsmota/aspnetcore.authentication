@@ -1,5 +1,4 @@
 using authentication.api.Filters;
-using authentication.api.ViewModels;
 using authentication.application;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +17,7 @@ using authentication.api.Events;
 using authentication.domain.Notifications;
 using authentication.application.Common;
 using authentication.domain.Constants;
+using System.Collections.Generic;
 
 namespace authentication.api
 {
@@ -50,10 +50,10 @@ namespace authentication.api
                 {
                     options.InvalidModelStateResponseFactory = context =>
                     {
-                        if (!context.ModelState.Any())
-                            return new BadRequestObjectResult(new DataResponse(message: "Inválid field", errorCode: 400));
+                        IEnumerable<Notification> errors = null;
 
-                        var errors = context.ModelState.Select(x => new Notification(x.Key, x.Value.Errors.First().ErrorMessage));
+                        if (context.ModelState.Any())
+                            errors = context.ModelState.Select(x => new Notification(x.Key, x.Value.Errors.First().ErrorMessage));
 
                         return new BadRequestObjectResult(new CommandResponse(400, Messages.INVALID_FIELDS, null, false) { Notifications = errors });
                     };

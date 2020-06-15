@@ -28,7 +28,7 @@ namespace authentication.api.Events
 
         public override Task Challenge(JwtBearerChallengeContext context)
         {
-            if (context.AuthenticateFailure == null || context.Error == "invalid_token")
+            if (context.AuthenticateFailure == null && context.Error == "invalid_token")
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 context.Response.ContentType = "application/json";

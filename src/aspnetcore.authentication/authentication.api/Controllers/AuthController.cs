@@ -1,6 +1,5 @@
 ﻿using authentication.api.Configurations;
 using authentication.api.Services;
-using authentication.api.ViewModels;
 using authentication.application.Commands.User;
 using authentication.application.Common;
 using authentication.application.Handlers.Interfaces;
@@ -14,7 +13,7 @@ namespace authentication.api.Controllers
     /// <summary>
     /// Api de autenticação.
     /// </summary>
-    [Route("/")]
+    [Route("api")]
     [ApiController]
     public class AuthController : ApiController
     {

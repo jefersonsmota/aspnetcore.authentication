@@ -33,6 +33,5 @@ namespace authentication.api.Controllers
 
             return new ObjectResult(result) { StatusCode = result.StatusCode };
         }
-
     }
 }
