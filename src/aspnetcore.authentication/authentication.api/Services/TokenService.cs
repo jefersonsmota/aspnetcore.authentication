@@ -1,6 +1,7 @@
 ﻿using authentication.api.Configurations;
 using authentication.api.ViewModels;
 using authentication.application.Commands.User;
+using authentication.application.Common;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,6 +14,12 @@ namespace authentication.api.Services
     {
         public static SingInResponse GereneteToken(UserResponse user, AppSettings appSettings)
         {
+            if (user == null)
+                throw new ArgumentNullException("user");
+
+            if (appSettings == null)
+                throw new ArgumentNullException("appSettings");
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var hashKey = Encoding.ASCII.GetBytes(appSettings.Secret);
             var expires = DateTime.UtcNow.AddHours(appSettings.Expiration);

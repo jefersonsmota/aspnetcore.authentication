@@ -3,7 +3,7 @@ using authentication.application.Handlers.Services;
 using authentication.infrastructure;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using authentication.application.Common.Mapper;
+using authentication.application.Common.Mappers;
 
 namespace authentication.application
 {
@@ -25,9 +25,6 @@ namespace authentication.application
             // Infra e Repositorios
             services.AddRepository();
 
-            // Handlers de validação da camada de aplicação
-            services.AddScoped<IUserValidationHandler, UserValidationHandler>();
-
             // Handlers de commands e querys da camada de aplicação
             services.AddScoped<IUserCommandHandler, UserCommandHandler>();
             services.AddScoped<IUserQueryHandler, UserQueryHandler>();
@@ -44,7 +41,7 @@ namespace authentication.application
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new AutoMapperProfile());
+                cfg.AddProfile<AutoMapperProfile>();
             });
 
             IMapper mapper = config.CreateMapper();

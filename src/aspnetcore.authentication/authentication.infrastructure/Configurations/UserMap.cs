@@ -1,6 +1,8 @@
 ﻿using authentication.domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace authentication.infrastructure.Configurations
 {
@@ -25,9 +27,14 @@ namespace authentication.infrastructure.Configurations
                 .HasMaxLength(150)
                 .IsRequired();
 
+            builder.Property(x => x.CreatedAt)
+                .IsRequired();
+
             builder.HasIndex(x => x.Email).IsUnique(true);
 
             builder.HasMany(x => x.Phones).WithOne(x => x.User);
+
+            builder.Ignore(x => x.Validation);
         }
     }
 }

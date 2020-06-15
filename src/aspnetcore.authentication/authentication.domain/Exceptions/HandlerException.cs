@@ -11,8 +11,6 @@ namespace authentication.domain.Exceptions
     public abstract class HandlerException : Exception
     {
         public int HttpStatusCode { get; private set; }
-        private readonly string _resourceName;
-        private readonly IList<string> _validationErrors;
 
         protected HandlerException(int httpStatusCode) { this.HttpStatusCode = httpStatusCode; }
 
@@ -26,16 +24,9 @@ namespace authentication.domain.Exceptions
             this.HttpStatusCode = httpStatusCode;
         }
 
-        protected HandlerException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-            _resourceName = info.GetString("ResourceName");
-            _validationErrors = (IList<string>)info.GetValue("ValidationErrors", typeof(IList<string>));
-        }
     }
 
-#pragma warning disable S3925 // "ISerializable" should be implemented correctly
     public class ValidationException : HandlerException
-#pragma warning restore S3925 // "ISerializable" should be implemented correctly
     {
         public ValidationException(string message = "", Exception innerException = null) : base(message, innerException, 400)
         {
@@ -43,9 +34,7 @@ namespace authentication.domain.Exceptions
         }
     }
 
-#pragma warning disable S3925 // "ISerializable" should be implemented correctly
     public class NotFoundException : HandlerException
-#pragma warning restore S3925 // "ISerializable" should be implemented correctly
     {
         public NotFoundException(string message = "", Exception innerException = null) : base(message, innerException, 404)
         {

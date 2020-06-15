@@ -1,6 +1,7 @@
-using authentication.application.Common.Mapper;
+using authentication.application.Common.Mappers;
 using authentication.application.Handlers.Interfaces;
 using authentication.application.Handlers.Services;
+using authentication.domain.Notifications;
 using authentication.infrastructure.Interfaces;
 using AutoMapper;
 using Moq;
@@ -15,7 +16,7 @@ namespace application.integration.test
     public class TestBase
     {
         protected Mock<IUserRespository> _mockRepository;
-        protected IUserValidationHandler _mockValidation;
+        protected NotificationContext _mockNotificationContext;
         protected IMapper _mockMapper;
 
         [SetUp]
@@ -23,7 +24,7 @@ namespace application.integration.test
         {
 
             _mockRepository = new Mock<IUserRespository>();
-            _mockValidation = new UserValidationHandler();
+            _mockNotificationContext = new NotificationContext();
 
             var mapperConfiguration = new MapperConfiguration(cfg =>
             {

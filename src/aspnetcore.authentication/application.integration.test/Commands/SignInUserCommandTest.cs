@@ -12,9 +12,9 @@ namespace application.integration.test.Commands
     public class SignInUserCommandTest : TestBase
     {
         [Test]
-        public void ShouldRequireFieldsTest()
+        public async Task ShouldRequireFieldsTest()
         {
-            _mockRepository.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult(new User()));
+            _mockRepository.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
             var singInUserRequest = new SingInUserRequest()
             {
@@ -22,17 +22,20 @@ namespace application.integration.test.Commands
                 Password = "12345678"
             };
 
-            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockValidation);
+            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
-            ValidationException ex = Assert.ThrowsAsync<ValidationException>(async () => await command.Handler(singInUserRequest));
+            var result = await command.Handler(singInUserRequest);
 
-            Assert.That(ex.Message, Is.EqualTo(Messages.MISSING_FIELDS));
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.Error);
+            Assert.AreEqual(400, result.StatusCode);
+            Assert.AreEqual(Messages.MISSING_FIELDS, result.Message);
         }
 
         [Test]
-        public void ShouldInvalidFieldsTest()
+        public async Task ShouldInvalidFieldsTest()
         {
-            _mockRepository.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult(new User()));
+            _mockRepository.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
             var singInUserRequest = new SingInUserRequest()
             {
@@ -40,15 +43,18 @@ namespace application.integration.test.Commands
                 Password = "12345678"
             };
 
-            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockValidation);
+            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
-            ValidationException ex = Assert.ThrowsAsync<ValidationException>(async () => await command.Handler(singInUserRequest));
+            var result = await command.Handler(singInUserRequest);
 
-            Assert.That(ex.Message, Is.EqualTo(Messages.INVALID_FIELDS));
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.Error);
+            Assert.AreEqual(404, result.StatusCode);
+            Assert.AreEqual(Messages.INVALID_EMAIL_OR_PASSWORD, result.Message);
         }
 
         [Test]
-        public void ShouldInvalidUserFieldsTest()
+        public async Task ShouldInvalidUserFieldsTest()
         {
             _mockRepository.Setup(x => x.GetByEmail(It.IsAny<string>())).Returns(Task.FromResult<User>(null));
 
@@ -58,11 +64,14 @@ namespace application.integration.test.Commands
                 Password = "12345678"
             };
 
-            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockValidation);
+            var command = new UserCommandHandler(_mockRepository.Object, _mockMapper, _mockNotificationContext);
 
-            NotFoundException ex = Assert.ThrowsAsync<NotFoundException>(async () => await command.Handler(singInUserRequest));
+            var result = await command.Handler(singInUserRequest);
 
-            Assert.That(ex.Message, Is.EqualTo(Messages.INVALID_EMAIL_OR_PASSWORD));
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.Error);
+            Assert.AreEqual(404, result.StatusCode);
+            Assert.AreEqual(Messages.INVALID_EMAIL_OR_PASSWORD, result.Message);
         }
     }
 }

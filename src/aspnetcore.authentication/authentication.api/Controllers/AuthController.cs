@@ -1,8 +1,9 @@
 ﻿using authentication.api.Configurations;
 using authentication.api.Services;
-using authentication.api.ViewModels;
 using authentication.application.Commands.User;
+using authentication.application.Common;
 using authentication.application.Handlers.Interfaces;
+using authentication.domain.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -12,13 +13,13 @@ namespace authentication.api.Controllers
     /// <summary>
     /// Api de autenticação.
     /// </summary>
-    [Route("/")]
+    [Route("api")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : ApiController
     {
         private readonly AppSettings _appSettings;
 
-        public AuthController(AppSettings appSettings)
+        public AuthController(AppSettings appSettings, NotificationContext notificationContext) : base(notificationContext)
         {
             _appSettings = appSettings;
         }
@@ -32,17 +33,10 @@ namespace authentication.api.Controllers
         [HttpPost]
         [Route("signup")]
         [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> SignUp([FromServices] IUserCommandHandler userCommandHandler, [FromBody] CreateUserRequest createUserRequest)
+        public async Task<IActionResult> SignUp([FromServices] IUserCommandHandler userCommandHandler, [FromBody] CreateUserRequest createUserRequest)
         {
-            if (ModelState.IsValid)
-            {
-                if (await userCommandHandler.Handler(createUserRequest) > 0)
-                {
-                    return Ok(new { message = "User created", code = 200 });
-                }
-            }
-
-            return BadRequest();
+            var response = await userCommandHandler.Handler(createUserRequest);
+            return Response(response);
         }
 
         /// <summary>
@@ -54,18 +48,20 @@ namespace authentication.api.Controllers
         [HttpPost]
         [Route("signin")]
         [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> SignIn([FromServices] IUserCommandHandler userCommandHandler, [FromBody] SingInUserRequest singIn)
+        public async Task<IActionResult> SignIn([FromServices] IUserCommandHandler userCommandHandler, [FromBody] SingInUserRequest singIn)
         {
             if (ModelState.IsValid)
             {
                 var user = await userCommandHandler.Handler(singIn);
 
-                var response = TokenService.GereneteToken(user, _appSettings);
+                if (user.Error) return Response(user);
 
-                return Ok(response);
+                var response = TokenService.GereneteToken((UserResponse)user.Data, _appSettings);
+
+                return Response(new CommandResponse(user.StatusCode, user.Message, response));
             }
 
-            return BadRequest(new DataResponse("Invalid email or password", 400));
+            return BadRequest();
         }
 
         /// <summary>
@@ -77,10 +73,10 @@ namespace authentication.api.Controllers
         [HttpGet]
         [Route("me")]
         [Authorize]
-        public async Task<ActionResult<dynamic>> Me([FromServices] IUserQueryHandler userQueryHandler, [FromHeader] string login)
+        public async Task<IActionResult> Me([FromServices] IUserQueryHandler userQueryHandler, [FromHeader] string login)
         {
             var user = await userQueryHandler.Handler(login);
-            return Ok(user);
+            return Response(user);
         }
     }
 }

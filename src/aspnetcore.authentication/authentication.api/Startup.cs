@@ -1,5 +1,4 @@
 using authentication.api.Filters;
-using authentication.api.ViewModels;
 using authentication.application;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +14,10 @@ using authentication.api.Services;
 using authentication.api.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using authentication.api.Events;
+using authentication.domain.Notifications;
+using authentication.application.Common;
+using authentication.domain.Constants;
+using System.Collections.Generic;
 
 namespace authentication.api
 {
@@ -47,11 +50,12 @@ namespace authentication.api
                 {
                     options.InvalidModelStateResponseFactory = context =>
                     {
-                        var errors = context.ModelState.Values.SelectMany(x => x.Errors);
+                        IEnumerable<Notification> errors = null;
 
-                        var errorMessage = errors.FirstOrDefault()?.ErrorMessage;
+                        if (context.ModelState.Any())
+                            errors = context.ModelState.Select(x => new Notification(x.Key, x.Value.Errors.First().ErrorMessage));
 
-                        return new BadRequestObjectResult(new DataResponse(errorMessage, 400));
+                        return new BadRequestObjectResult(new CommandResponse(400, Messages.INVALID_FIELDS, null, false) { Notifications = errors });
                     };
                 });
 
@@ -119,6 +123,7 @@ namespace authentication.api
         /// <param name="services">Service Collection</param>
         private void ConfigureIoC(IServiceCollection services)
         {
+            services.AddScoped<NotificationContext>();
             services.AddSingleton(Configuration);
             services.AddApplication();
         }

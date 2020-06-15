@@ -21,6 +21,8 @@ namespace authentication.infrastructure.Configurations
             builder.Property(x => x.CountryCode)
                 .HasMaxLength(7)
                 .IsRequired();
+
+            builder.Ignore(x => x.Validation);
         }
     }
 }
