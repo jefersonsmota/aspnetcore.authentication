@@ -1,0 +1,23 @@
+<div class="form-container">
+    <div class="form-title">
+        <h1 class="title">AUTH</h1>
+    </div>
+    <div class="form-content">
+        <form class="auth-form" [formGroup]="singInForm" (ngSubmit)="onSubmit()">
+            <div class="field">
+                <input class="input" type="text" formControlName="email" placeholder="username" name="usrLogin" id="usrLogin" required>
+            </div>
+            <div class="field">
+                <input class="input" type="password" formControlName="password" placeholder="password" name="usrPassword" id="usrPassword" required>
+            </div>
+            <div class="field">
+                <input class="button is-success" type="submit" value="Enter" [disabled]="singInForm.invalid">
+            </div>
+
+            <p>
+                Ainda não é cadastrado? <a routerLink="/signup">Cadastre-se!</a>
+            </p>
+        </form>
+    </div>
+</div>
+

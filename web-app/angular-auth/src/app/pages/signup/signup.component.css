@@ -1,0 +1,22 @@
+.form-container {
+    width: 600px;
+}
+
+.form-content > form > input,button {
+    width: 500px;
+    padding: 1px;
+    font-size: large;
+}
+
+input.area-code  {
+    width: 67px;
+}
+
+.phone-form {
+    margin-top: 10px;
+}
+
+.delete-phone {
+    background-color: #f14668;
+    vertical-align: middle;
+}
