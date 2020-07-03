@@ -3,7 +3,13 @@
         <h1 class="title">Register</h1>
     </div>
     <div class="form-content">
+        <div class="notification" [ngClass]="{'is-success': isSuccess, 'is-danger': !isSuccess}"  *ngIf="isShowMessage">
+            <button class="delete" (click)="isShowMessage = false"></button>
+            {{message}}
+            <ul><li *ngFor="let notification of notifications">{{notification.message}}</li></ul>
+          </div>
         <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+            
             <div class="field is-grouped">
                 <div class="control is-expanded">
                     <label class="label">First Name</label>
@@ -46,11 +52,11 @@
                         </div>
                         <div class="control">
                             <label for="area_code" class="label">Area Code</label>
-                            <input type="text" name="area_code_{{i}}" id="area_code_{{i}}" class="input area-code" formControlName="area_code_{{i}}">
+                            <input type="text" name="area_code_{{i}}" id="area_code_{{i}}" class="input area-code" formControlName="area_code_{{i}}" maxlength="3">
                         </div>
                         <div class="control is-expanded">
                             <label for="phoneNumber" class="label">Number <a class="delete is-small delete-phone" *ngIf="i > 0" (click)="removePhone(i)"></a></label>
-                            <input type="text" name="phoneNumber_{{i}}" id="phoneNumber_{{i}}" class="input" formControlName="number_{{i}}">
+                            <input type="text" name="phoneNumber_{{i}}" id="phoneNumber_{{i}}" class="input" formControlName="number_{{i}}" maxlength="9">
                         </div>
                     </form>
                 </div>
@@ -64,7 +70,7 @@
 
             <div class="field">
                 <p class="control">
-                    <button type="submit" class="button is-success is-fullwidth" [disabled]="signUpForm.invalid || phoneForms.invalid">
+                    <button type="submit" class="button is-success is-fullwidth" [disabled]="(signUpForm.invalid || phoneForms.invalid)">
                         Save
                     </button>
                 </p>

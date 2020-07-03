@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { SignUp } from 'src/app/shared/models/signUp';
 import { Phone } from 'src/app/shared/models/phone';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
@@ -14,17 +14,20 @@ export class SignupComponent implements OnInit {
 
     signUpForm: FormGroup;
     phoneForms: FormArray;
+    message: string;
+    isShowMessage: boolean = false;
+    notifications: {key, message}[];
+    isSuccess: boolean;
 
     constructor(private authService: AuthService) { }
 
     ngOnInit(): void {
-        //this.phoneForms = new Array<FormGroup>();
         this.phoneForms = new FormArray([this.createPhoneForm(new Phone(), 0)], [Validators.required]);
-        this.createForm(new SignUp());        
+        this.createForm(new SignUp());
     }
 
     addPhone():void {
-        if (this.phoneForms.length < 3) {
+        if (this.phoneForms.length < 3 && this.phoneForms.enabled) {
             this.phoneForms.push(this.createPhoneForm(new Phone(), this.phoneForms.length));
         }
     }
@@ -42,10 +45,21 @@ export class SignupComponent implements OnInit {
 
         let signUp = this.createRegister();
 
+        this.disableForms();
+
         this.authService.register(signUp).pipe(first()).subscribe(resp => {
-            console.log(resp);
+            this.isSuccess = resp.success;
+            this.message = resp.message;
+            this.isShowMessage = true;
+            this.enableForms(); 
         }, err => {
+            this.isSuccess = err.error.success;
+            this.message = err.error.message;
+            this.notifications = err.error.notifications;
+            this.isShowMessage = true;
+
             console.log(err);
+            this.enableForms(); 
         });
     }
 
@@ -90,6 +104,16 @@ export class SignupComponent implements OnInit {
         });
 
         return phoneForm;
+    }
+
+    disableForms() {
+        this.signUpForm.disable();
+        this.phoneForms.disable();
+    }
+
+    enableForms() {
+        this.signUpForm.enable();
+        this.phoneForms.enable();
     }
 
 }
