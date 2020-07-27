@@ -7,6 +7,7 @@
             ValidateEmail();
             ValidateFirstName();
             ValidateLastName();
+            ValidateHometown();
             ValidatePassword();
             ValidatePhone();
         }

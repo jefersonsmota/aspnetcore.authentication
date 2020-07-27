@@ -1,9 +1,11 @@
-﻿using authentication.application.Commands.User;
+﻿using authentication.application.Commands.Request.User;
+using authentication.application.Commands.User;
 using authentication.application.Common;
 using authentication.application.Handlers.Interfaces;
 using authentication.domain.Constants;
 using authentication.domain.Entities;
 using authentication.domain.Notifications;
+using authentication.domain.Services;
 using authentication.infrastructure.Interfaces;
 using AutoMapper;
 using System.Threading.Tasks;
@@ -64,22 +66,47 @@ namespace authentication.application.Handlers.Services
             return Ok(_mapper.Map<UserResponse>(user), Messages.SING_IN);
         }
 
-        public async Task<CommandResponse> Handler(string login)
+        public async Task<CommandResponse> Handler(MeRequest me)
         {
-            if (string.IsNullOrWhiteSpace(login))
+            if (string.IsNullOrWhiteSpace(me.Login))
             {
                 _notificationContext.AddNotification("Login", Messages.MISSING_FIELDS);
-                return BadRequest(login, Messages.MISSING_FIELDS);
+                return BadRequest(me.Login, Messages.MISSING_FIELDS);
             }                
 
-            var user = await _userRepository.GetByEmail(login);
+            var user = await _userRepository.GetByEmail(me.Login);
             if (user == null)
             {
                 _notificationContext.AddNotification("Login", Messages.NOT_FOUND_USER);
-                return NotFound(login, Messages.NOT_FOUND_USER);
+                return NotFound(me.Login, Messages.NOT_FOUND_USER);
             }
 
             return Ok(_mapper.Map<UserResponse>(user), null);
+        }
+
+        public async Task<CommandResponse> Handler(ForgotPasswordRequest forgot)
+        {
+            if (string.IsNullOrWhiteSpace(forgot.Email))
+            {
+                _notificationContext.AddNotification("Email", Messages.MISSING_FIELDS);
+                return BadRequest(forgot.Email, Messages.MISSING_FIELDS);
+            }
+
+            if (!await _userRepository.CheckAlreadyExist(forgot.Email))
+            {
+                _notificationContext.AddNotification("Email", Messages.NOT_FOUND_USER);
+                return NotFound(forgot.Email, Messages.NOT_FOUND_USER);
+            }
+
+            MailService.Email(
+                forgot.Email, 
+                Templates.FORGOT_PASSWORD_SUBJECT, 
+                Templates.FORGOT_PASSWORD_BODY
+                            .Replace("{EMAIL}", forgot.Email)
+                            .Replace("{URL}", ""), 
+                true);
+
+            return null;
         }
     }
 }

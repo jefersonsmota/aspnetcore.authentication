@@ -1,7 +1,6 @@
 ﻿using authentication.api.Configurations;
 using authentication.api.ViewModels;
 using authentication.application.Commands.User;
-using authentication.application.Common;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,6 +28,7 @@ namespace authentication.api.Services
                 Subject = new System.Security.Claims.ClaimsIdentity(new Claim[] { 
                    new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                   new Claim("Email", user.Email),
                    new Claim("Name", $"{user.FirstName} {user.LastName}")
                 }),
                 Expires = expires,

@@ -1,11 +1,13 @@
 ﻿using authentication.api.Configurations;
 using authentication.api.Services;
+using authentication.application.Commands.Request.User;
 using authentication.application.Commands.User;
 using authentication.application.Common;
 using authentication.application.Handlers.Interfaces;
 using authentication.domain.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 
 namespace authentication.api.Controllers
@@ -72,10 +74,9 @@ namespace authentication.api.Controllers
         /// <returns>Informações do usuário</returns>
         [HttpGet]
         [Route("me")]
-        [Authorize]
         public async Task<IActionResult> Me([FromServices] IUserQueryHandler userQueryHandler, [FromHeader] string login)
         {
-            var user = await userQueryHandler.Handler(login);
+            var user = await userQueryHandler.Handler(new MeRequest() { Login = login });
             return Response(user);
         }
     }

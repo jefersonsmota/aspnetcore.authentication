@@ -15,6 +15,9 @@ namespace authentication.application.Commands.User
         [JsonPropertyName("lastname")]
         public string LastName { get; set; }
 
+        [JsonPropertyName("hometown")]
+        public string Hometown { get; set; }
+
         [JsonPropertyName("email")]
         public string Email { get; set; }
 

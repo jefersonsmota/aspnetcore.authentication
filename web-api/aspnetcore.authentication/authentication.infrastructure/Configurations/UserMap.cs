@@ -19,6 +19,10 @@ namespace authentication.infrastructure.Configurations
                 .HasMaxLength(150)
                 .IsRequired();
 
+            builder.Property(x => x.Hometown)
+                .HasMaxLength(150)
+                .IsRequired();
+
             builder.Property(x => x.LastName)
                 .HasMaxLength(150)
                 .IsRequired();

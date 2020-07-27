@@ -20,6 +20,12 @@ namespace authentication.application.Commands.User
         [MaxLength(150, ErrorMessage = "Maximum 150 letters")]
         public string LastName { get; set; }
 
+        [JsonPropertyName("hometown")]
+        [Required(ErrorMessage = "Hometown is required")]
+        [MinLength(2, ErrorMessage = "Minimum 2 letters")]
+        [MaxLength(150, ErrorMessage = "Maximum 150 letters")]
+        public string Hometown { get; set; }
+
         [JsonPropertyName("email")]
         [Required(ErrorMessage = "E-mail is required")]
         [EmailAddress(ErrorMessage = "E-mail doesn't match")]

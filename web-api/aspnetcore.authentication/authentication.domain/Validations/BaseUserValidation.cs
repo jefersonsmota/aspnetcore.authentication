@@ -19,6 +19,13 @@ namespace authentication.domain.Validations
                 .Length(2, 150).WithMessage("The Last Name must have between 2 and 150 characters");
         }
 
+        protected void ValidateHometown()
+        {
+            RuleFor(u => u.LastName)
+                .NotEmpty().WithMessage("Hometown is requires")
+                .Length(2, 150).WithMessage("The Hometown must have between 2 and 150 characters");
+        }
+
         protected void ValidateEmail()
         {
             RuleFor(u => u.Email)
