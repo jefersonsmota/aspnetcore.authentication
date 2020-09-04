@@ -21,6 +21,7 @@ namespace authentication.application.Common.Mappers
                                          c.LastName,
                                          c.Email,
                                          c.Password,
+                                         c.Hometown,
                                          v.Mapper.Map<IEnumerable<Phone>>(c.Phones)));
 
             this.CreateMap<User, UserResponse>()

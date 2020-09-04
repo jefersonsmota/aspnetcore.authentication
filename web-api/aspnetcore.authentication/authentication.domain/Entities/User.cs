@@ -21,11 +21,12 @@ namespace authentication.domain.Entities
         public DateTime? LastLogin { get; private set; }
         public IEnumerable<Phone> Phones { get; private set; }
 
-        public User(string firstName, string lastName, string email, string password, IEnumerable<Phone> phones = null, DateTime? createdAt = null, DateTime? lastLogin = null)
+        public User(string firstName, string lastName, string email, string password, string hometown, IEnumerable<Phone> phones = null, DateTime? createdAt = null, DateTime? lastLogin = null)
         {
             FirstName = firstName;
             LastName = lastName;
             Email = email;
+            Hometown = hometown;
             CreatedAt = createdAt.HasValue ? createdAt.Value : DateTime.UtcNow;
             LastLogin = lastLogin;
 

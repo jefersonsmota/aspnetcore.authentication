@@ -59,7 +59,7 @@ namespace authentication.application.Handlers.Services
             City city = null;
 
             var httpClient = new HttpClient();
-            var result = await httpClient.GetAsync("https://openweathermap.org/data/2.5/find?q=Vit%C3%B3ria,BR&appid=439d4b804bc8187953eb36d2a8c26a02&units=metric");
+            var result = await httpClient.GetAsync($"https://openweathermap.org/data/2.5/find?q={user.Hometown},BR&appid=439d4b804bc8187953eb36d2a8c26a02&units=metric");
             if(result.IsSuccessStatusCode)
             {
                 cities = JsonConvert.DeserializeObject<WeatherCityFindResponse>(await result.Content.ReadAsStringAsync());

@@ -1,4 +1,6 @@
-﻿using authentication.domain.Notifications;
+﻿using authentication.application.Commands.Request.Playlist;
+using authentication.application.Handlers.Interfaces;
+using authentication.domain.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -16,9 +18,9 @@ namespace authentication.api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromServices] IUserQueryHandler userQueryHandler, WeatherPlaylistRequest weatherPlaylistRequest)
         {
-            return Response();
+            return Response(await userQueryHandler.Handler(weatherPlaylistRequest));
         }
     }
 }
